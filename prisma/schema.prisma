@@ -1,0 +1,244 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Admin table for authentication
+model Admin {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  username  String    @unique
+  password  String
+  name      String
+  role      Role      @default(ADMIN)
+  isActive  Boolean   @default(true)
+  lastLogin DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("admins")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+// Tourist attractions/destinations
+model Attraction {
+  id               String     @id @default(cuid())
+  title            String
+  slug             String     @unique
+  description      String
+  fullDescription  String?
+  category         String
+  rating           Float      @default(0)
+  duration         String
+  difficulty       Difficulty
+  ticketPrice      Int // in rupiah
+  ticketPriceChild Int? // in rupiah
+  location         String?
+  coordinates      String? // lat,lng format
+  bestTime         String?
+  facilities       String? // JSON string array
+  tips             String? // JSON string array
+  isActive         Boolean    @default(true)
+  featured         Boolean    @default(false)
+  viewCount        Int        @default(0)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  // Relations
+  images   AttractionImage[]
+  features AttractionFeature[]
+  reviews  Review[]
+
+  @@map("attractions")
+}
+
+enum Difficulty {
+  MUDAH
+  SEDANG
+  MENANTANG
+}
+
+// Attraction images
+model AttractionImage {
+  id           String   @id @default(cuid())
+  attractionId String
+  url          String
+  alt          String?
+  caption      String?
+  isPrimary    Boolean  @default(false)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  attraction Attraction @relation(fields: [attractionId], references: [id], onDelete: Cascade)
+
+  @@map("attraction_images")
+}
+
+// Attraction features (like "Kolam Renang Alami", etc.)
+model AttractionFeature {
+  id           String  @id @default(cuid())
+  attractionId String
+  name         String
+  icon         String?
+  description  String?
+
+  attraction Attraction @relation(fields: [attractionId], references: [id], onDelete: Cascade)
+
+  @@map("attraction_features")
+}
+
+// Gallery images
+model GalleryImage {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  url         String
+  alt         String?
+  category    String
+  tags        String? // JSON string array
+  isActive    Boolean  @default(true)
+  featured    Boolean  @default(false)
+  order       Int      @default(0)
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("gallery_images")
+}
+
+// Contact information
+model ContactInfo {
+  id          String      @id @default(cuid())
+  type        ContactType
+  title       String
+  value       String
+  description String?
+  icon        String?
+  isActive    Boolean     @default(true)
+  order       Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("contact_info")
+}
+
+enum ContactType {
+  PHONE
+  EMAIL
+  ADDRESS
+  SOCIAL_MEDIA
+  OTHER
+}
+
+// Site settings/configuration
+model SiteSetting {
+  id          String      @id @default(cuid())
+  key         String      @unique
+  value       String      @db.Text
+  description String?
+  type        SettingType @default(TEXT)
+  category    String      @default("general")
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("site_settings")
+}
+
+enum SettingType {
+  TEXT
+  NUMBER
+  BOOLEAN
+  JSON
+  IMAGE
+}
+
+// Reviews/testimonials
+model Review {
+  id           String   @id @default(cuid())
+  attractionId String?
+  name         String
+  email        String?
+  rating       Float
+  title        String?
+  content      String
+  isApproved   Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  attraction Attraction? @relation(fields: [attractionId], references: [id], onDelete: SetNull)
+
+  @@map("reviews")
+}
+
+// Newsletter subscribers
+model NewsletterSubscriber {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  name        String?
+  isActive    Boolean   @default(true)
+  confirmedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("newsletter_subscribers")
+}
+
+// Booking inquiries
+model BookingInquiry {
+  id         String        @id @default(cuid())
+  name       String
+  email      String
+  phone      String?
+  message    String
+  visitDate  DateTime?
+  guestCount Int?
+  status     InquiryStatus @default(PENDING)
+  notes      String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@map("booking_inquiries")
+}
+
+enum InquiryStatus {
+  PENDING
+  CONTACTED
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+// Blog posts (for future content marketing)
+model BlogPost {
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  excerpt       String?
+  content       String
+  featuredImage String?
+  isPublished   Boolean   @default(false)
+  publishedAt   DateTime?
+  tags          String? // JSON string array
+  viewCount     Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("blog_posts")
+}
