@@ -21,13 +21,8 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const where: {
-      OR?: Array<{
-        title?: { contains: string; mode: string };
-        description?: { contains: string; mode: string };
-      }>;
-      category?: string;
-    } = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {};
 
     if (search) {
       where.OR = [

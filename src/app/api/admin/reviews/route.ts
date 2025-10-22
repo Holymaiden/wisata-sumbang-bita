@@ -22,15 +22,8 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const where: {
-      OR?: Array<{
-        name?: { contains: string; mode: string };
-        comment?: { contains: string; mode: string };
-        email?: { contains: string; mode: string };
-      }>;
-      isApproved?: boolean;
-      attractionId?: string;
-    } = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {};
 
     if (search) {
       where.OR = [
