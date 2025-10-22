@@ -9,7 +9,7 @@ export interface UseFormStateOptions<T> {
   validate?: (data: T) => Record<string, string> | null;
 }
 
-export function useFormState<T extends Record<string, any>>(
+export function useFormState<T extends Record<string, unknown>>(
   defaultValues: T,
   options: UseFormStateOptions<T> = {}
 ) {
@@ -28,7 +28,7 @@ export function useFormState<T extends Record<string, any>>(
   }, [options.initialData, defaultValues]);
 
   const setValue = useCallback(
-    (field: keyof T, value: any) => {
+    (field: keyof T, value: unknown) => {
       setData((prev) => ({ ...prev, [field]: value }));
 
       if (errors[field as string]) {

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import {
   Dialog,
   DialogContent,
@@ -109,13 +110,14 @@ export function ViewAttractionDialog({
                       key={index}
                       className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden"
                     >
-                      <img
+                      <Image
                         src={image.url}
                         alt={image.alt || `${attraction.title} ${index + 1}`}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                       />
                       {image.isPrimary && (
-                        <Badge className="absolute top-1 left-1 text-xs">
+                        <Badge className="absolute top-1 left-1 text-xs z-10">
                           Primary
                         </Badge>
                       )}

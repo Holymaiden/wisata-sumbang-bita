@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { gallerySchema } from '@/lib/validations';
 import { verifyAdminToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // GET /api/admin/gallery - Get all gallery items
 export async function GET(request: NextRequest) {
@@ -23,7 +21,13 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: {
+      OR?: Array<{
+        title?: { contains: string; mode: string };
+        description?: { contains: string; mode: string };
+      }>;
+      category?: string;
+    } = {};
 
     if (search) {
       where.OR = [

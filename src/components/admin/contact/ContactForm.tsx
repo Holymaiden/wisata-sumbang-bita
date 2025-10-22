@@ -72,40 +72,45 @@ export function ContactForm({
     onSubmit: (data) => {
       const cleanedData = {
         ...data,
-        description: data.description?.trim() || undefined,
+        description:
+          (data.description as string | undefined)?.trim() || undefined,
       };
-      onSubmit(cleanedData);
+      onSubmit(cleanedData as ContactFormData);
     },
     validate: (data) => {
       const errors: Record<string, string> = {};
+      const type = data.type as string;
+      const label = data.label as string | undefined;
+      const value = data.value as string | undefined;
+      const order = data.order as number;
 
-      if (!data.type) {
+      if (!type) {
         errors.type = 'Contact type is required';
       }
 
-      if (!data.label?.trim()) {
+      if (!label?.trim()) {
         errors.label = 'Label is required';
       }
 
-      if (!data.value?.trim()) {
+      if (!value?.trim()) {
         errors.value = 'Contact value is required';
       }
 
-      if (data.type === 'EMAIL' && data.value) {
+      if (type === 'EMAIL' && value) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(data.value)) {
+        if (!emailRegex.test(value)) {
           errors.value = 'Please enter a valid email address';
         }
       }
 
-      if (data.type === 'PHONE' && data.value) {
+      if (type === 'PHONE' && value) {
         const phoneRegex = /^[\+]?[\d\s\-\(\)]+$/;
-        if (!phoneRegex.test(data.value)) {
+        if (!phoneRegex.test(value)) {
           errors.value = 'Please enter a valid phone number';
         }
       }
 
-      if (data.order < 0) {
+      if (order < 0) {
         errors.order = 'Order cannot be negative';
       }
 
@@ -139,14 +144,14 @@ export function ContactForm({
           {...form.getFieldProps('label')}
           label="Label"
           required
-          placeholder={getLabelPlaceholderByType(form.data.type)}
+          placeholder={getLabelPlaceholderByType(form.data.type as string)}
         />
 
         <TextField
           {...form.getFieldProps('value')}
           label="Contact Value"
           required
-          placeholder={getPlaceholderByType(form.data.type)}
+          placeholder={getPlaceholderByType(form.data.type as string)}
         />
 
         <TextAreaField

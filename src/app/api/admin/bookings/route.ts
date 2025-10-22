@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { bookingSchema } from '@/lib/validations';
 import { verifyAdminToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // GET /api/admin/bookings - Get all booking inquiries
 export async function GET(request: NextRequest) {
@@ -23,6 +21,7 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
 
     if (search) {

@@ -243,7 +243,7 @@ export default function TermsAndConditions() {
                       Foto dan video pengunjung dapat digunakan untuk promosi
                       dengan persetujuan
                     </li>
-                    <li>Nama "Sumpang Bita" adalah merek dagang terdaftar</li>
+                    <li>Nama &quot;Sumpang Bita&quot; adalah merek dagang terdaftar</li>
                   </ul>
                 </CardContent>
               </Card>

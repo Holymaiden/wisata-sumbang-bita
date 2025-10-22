@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { reviewSchema } from '@/lib/validations';
 import { verifyAdminToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // GET /api/admin/reviews - Get all reviews
 export async function GET(request: NextRequest) {
@@ -24,13 +22,21 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: {
+      OR?: Array<{
+        name?: { contains: string; mode: string };
+        comment?: { contains: string; mode: string };
+        email?: { contains: string; mode: string };
+      }>;
+      isApproved?: boolean;
+      attractionId?: string;
+    } = {};
 
     if (search) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
-        { content: { contains: search, mode: 'insensitive' } },
-        { title: { contains: search, mode: 'insensitive' } },
+        { comment: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
       ];
     }
 

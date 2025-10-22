@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   BarChart3,
-  Users,
   MapPin,
   Image,
   MessageSquare,
@@ -30,6 +29,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   useEffect(() => {
     checkAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkAuth = async () => {
@@ -40,7 +40,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         return;
       }
       setIsLoading(false);
-    } catch (error) {
+    } catch {
       router.push('/admin/login');
     }
   };

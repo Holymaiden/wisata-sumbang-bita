@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const { exec } = require('child_process');
-const path = require('path');
+import { exec } from 'child_process';
+import { join } from 'path';
 
 console.log('🌱 Running Prisma seed...');
 
 process.env.NODE_ENV = 'development';
 
-const seedPath = path.join(__dirname, 'seed.ts');
+const seedPath = join(__dirname, 'seed.ts');
 const command = `npx tsx ${seedPath}`;
 
 exec(command, { cwd: process.cwd() }, (error, stdout, stderr) => {

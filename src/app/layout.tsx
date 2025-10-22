@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Inter, Poppins } from 'next/font/google';
-// @ts-expect-error - err
 import './globals.css';
 import { Providers } from './providers';
 

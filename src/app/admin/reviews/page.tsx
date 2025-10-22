@@ -14,13 +14,7 @@ import {
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -670,11 +664,14 @@ export default function ReviewsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="general">General Review</SelectItem>
-                    {(attractionsData?.data || []).map((attraction: any) => (
-                      <SelectItem key={attraction.id} value={attraction.id}>
-                        {attraction.title}
-                      </SelectItem>
-                    ))}
+                    {(attractionsData?.data || []).map(
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      (attraction: any) => (
+                        <SelectItem key={attraction.id} value={attraction.id}>
+                          {attraction.title}
+                        </SelectItem>
+                      )
+                    )}
                   </SelectContent>
                 </Select>
               </div>

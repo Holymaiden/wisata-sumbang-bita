@@ -174,25 +174,29 @@ export function SettingsForm({
     onSubmit: (data) => {
       const cleanedData = {
         ...data,
-        key: data.key.toLowerCase().replace(/[^a-z0-9_]/g, '_'),
-        description: data.description?.trim() || undefined,
+        key: (data.key as string).toLowerCase().replace(/[^a-z0-9_]/g, '_'),
+        description:
+          (data.description as string | undefined)?.trim() || undefined,
       };
-      onSubmit(cleanedData);
+      onSubmit(cleanedData as SettingFormData);
     },
     validate: (data) => {
       const errors: Record<string, string> = {};
+      const key = data.key as string | undefined;
+      const value = data.value as string | undefined;
+      const type = data.type as string;
 
-      if (!data.key?.trim()) {
+      if (!key?.trim()) {
         errors.key = 'Setting key is required';
-      } else if (!/^[a-z0-9_]+$/.test(data.key.toLowerCase())) {
+      } else if (!/^[a-z0-9_]+$/.test(key.toLowerCase())) {
         errors.key =
           'Key can only contain lowercase letters, numbers, and underscores';
       }
 
-      if (!data.value?.trim()) {
+      if (!value?.trim()) {
         errors.value = 'Setting value is required';
       } else {
-        const validationError = validateValueByType(data.value, data.type);
+        const validationError = validateValueByType(value, type);
         if (validationError) {
           errors.value = validationError;
         }
@@ -230,7 +234,7 @@ export function SettingsForm({
       ...form.getFieldProps('value'),
       label: 'Setting Value',
       required: true,
-      placeholder: getPlaceholderByType(form.data.type),
+      placeholder: getPlaceholderByType(form.data.type as string),
     };
 
     switch (form.data.type) {
@@ -294,7 +298,7 @@ export function SettingsForm({
             required
             placeholder="Select category"
             options={settingCategoryOptions}
-            description={getCategoryHelpText(form.data.category)}
+            description={getCategoryHelpText(form.data.category as string)}
           />
 
           <SelectField
@@ -312,7 +316,7 @@ export function SettingsForm({
           placeholder="setting_key_name"
           description="Unique identifier for this setting (lowercase, underscores only)"
           onChange={handleKeyChange}
-          value={form.data.key}
+          value={form.data.key as string}
           disabled={!isKeyEditable}
         />
 
@@ -328,18 +332,18 @@ export function SettingsForm({
               :
             </p>
             <div className="flex flex-wrap gap-2">
-              {getSettingSuggestionsByCategory(form.data.category).map(
-                (suggestion) => (
-                  <button
-                    key={suggestion}
-                    type="button"
-                    onClick={() => form.setValue('key', suggestion)}
-                    className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
-                  >
-                    {suggestion}
-                  </button>
-                )
-              )}
+              {getSettingSuggestionsByCategory(
+                form.data.category as string
+              ).map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  onClick={() => form.setValue('key', suggestion)}
+                  className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
+                >
+                  {suggestion}
+                </button>
+              ))}
             </div>
           </div>
         )}
@@ -365,14 +369,18 @@ export function SettingsForm({
             <br />
             Simple object:{' '}
             <code>
-              {'{'}"key": "value"{'}'}
+              {'{'}&quot;key&quot;: &quot;value&quot;{'}'}
             </code>
             <br />
-            Array: <code>["item1", "item2", "item3"]</code>
+            Array:{' '}
+            <code>
+              [&quot;item1&quot;, &quot;item2&quot;, &quot;item3&quot;]
+            </code>
             <br />
             Complex:{' '}
             <code>
-              {'{'}"colors": ["red", "blue"], "count": 5{'}'}
+              {'{'}&quot;colors&quot;: [&quot;red&quot;, &quot;blue&quot;],
+              &quot;count&quot;: 5{'}'}
             </code>
           </div>
         )}

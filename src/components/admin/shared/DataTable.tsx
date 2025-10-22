@@ -32,7 +32,7 @@ import { TableConfig } from '@/types/admin';
 interface DataTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
-  config?: TableConfig<TData>;
+  config?: TableConfig;
   isLoading?: boolean;
   emptyMessage?: string;
 }

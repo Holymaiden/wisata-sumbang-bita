@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { attractionSchema } from '@/lib/validations';
 import { verifyAdminToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // GET /api/admin/attractions - Get all attractions
 export async function GET(request: NextRequest) {

@@ -22,7 +22,7 @@ export interface Attraction extends BaseEntity {
   features?: AttractionFeature[];
 }
 
-export interface AttractionImage {
+export interface AttractionImage extends Record<string, unknown> {
   id?: string;
   url: string;
   alt?: string;
@@ -31,14 +31,14 @@ export interface AttractionImage {
   order: number;
 }
 
-export interface AttractionFeature {
+export interface AttractionFeature extends Record<string, unknown> {
   id?: string;
   name: string;
   icon?: string;
   description?: string;
 }
 
-export interface AttractionFormData {
+export interface AttractionFormData extends Record<string, unknown> {
   title: string;
   slug: string;
   description: string;
@@ -72,7 +72,7 @@ export interface GalleryImage extends BaseEntity {
   viewCount: number;
 }
 
-export interface GalleryFormData {
+export interface GalleryFormData extends Record<string, unknown> {
   title: string;
   description?: string;
   url: string;
@@ -95,7 +95,7 @@ export interface Review extends BaseEntity {
   isVisible: boolean;
 }
 
-export interface ReviewFormData {
+export interface ReviewFormData extends Record<string, unknown> {
   name: string;
   email: string;
   rating: number;
@@ -119,7 +119,7 @@ export interface Booking extends BaseEntity {
   adminNotes?: string;
 }
 
-export interface BookingFormData {
+export interface BookingFormData extends Record<string, unknown> {
   name: string;
   email: string;
   phone: string;
@@ -141,7 +141,7 @@ export interface Contact extends BaseEntity {
   order: number;
 }
 
-export interface ContactFormData {
+export interface ContactFormData extends Record<string, unknown> {
   type: 'PHONE' | 'EMAIL' | 'ADDRESS' | 'SOCIAL_MEDIA' | 'OTHER';
   label: string;
   value: string;
@@ -159,7 +159,7 @@ export interface Setting extends BaseEntity {
   isPublic: boolean;
 }
 
-export interface SettingFormData {
+export interface SettingFormData extends Record<string, unknown> {
   key: string;
   value: string;
   type: 'TEXT' | 'NUMBER' | 'BOOLEAN' | 'JSON' | 'IMAGE';

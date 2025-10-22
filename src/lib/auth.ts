@@ -14,18 +14,25 @@ export async function verifyPassword(
   return bcrypt.compare(password, hashedPassword);
 }
 
-export function generateToken(payload: any): string {
+export interface TokenPayload {
+  adminId: string;
+  username: string;
+  role: string;
+}
+
+export function generateToken(payload: TokenPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 }
 
-export function verifyToken(token: string): any {
+export function verifyToken(token: string): jwt.JwtPayload | string | null {
   try {
     return jwt.verify(token, JWT_SECRET);
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function verifyAdminToken(request: any): Promise<any> {
   try {
     let token = request.cookies?.get('admin-token')?.value;
@@ -47,7 +54,7 @@ export async function verifyAdminToken(request: any): Promise<any> {
 
     const decoded = verifyToken(token);
     return decoded;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

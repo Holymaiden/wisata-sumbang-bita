@@ -14,8 +14,7 @@ import {
   BarChart3,
   Users,
   MapPin,
-  Image,
-  MessageSquare,
+  Image as ImageIcon,
   Star,
   Calendar,
   TrendingUp,
@@ -39,8 +38,20 @@ interface DashboardStats {
   bookingGrowth: number;
   averageRating: number;
   totalViews: number;
-  recentReviews: any[];
-  recentBookings: any[];
+  recentReviews: Array<{
+    id: string;
+    name: string;
+    attraction: string;
+    rating: number;
+    createdAt: string;
+  }>;
+  recentBookings: Array<{
+    id: string;
+    name: string;
+    email: string;
+    status: string;
+    createdAt: string;
+  }>;
 }
 
 export default function AdminDashboard() {
@@ -87,7 +98,7 @@ export default function AdminDashboard() {
     {
       title: 'Gallery Images',
       value: stats?.totalGallery || 0,
-      icon: Image,
+      icon: ImageIcon,
       description: 'Images in gallery',
       color: 'text-green-600',
       bgColor: 'bg-green-50',
@@ -201,7 +212,7 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {stats?.recentReviews?.slice(0, 2).map((review, index) => (
+                {stats?.recentReviews?.slice(0, 2).map((review) => (
                   <div
                     key={review.id}
                     className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
@@ -221,7 +232,7 @@ export default function AdminDashboard() {
                   </div>
                 ))}
 
-                {stats?.recentBookings?.slice(0, 2).map((booking, index) => (
+                {stats?.recentBookings?.slice(0, 2).map((booking) => (
                   <div
                     key={booking.id}
                     className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
@@ -275,7 +286,7 @@ export default function AdminDashboard() {
                   onClick={() => handleQuickAction('upload-images')}
                   className="p-4 text-left bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
                 >
-                  <Image className="h-8 w-8 text-green-600 mb-2" />
+                  <ImageIcon className="h-8 w-8 text-green-600 mb-2" />
                   <p className="font-medium text-sm">Upload Images</p>
                   <p className="text-xs text-gray-500">Add to gallery</p>
                 </button>

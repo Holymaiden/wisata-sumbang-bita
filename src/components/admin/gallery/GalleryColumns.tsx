@@ -8,7 +8,6 @@ import {
   Trash2,
   Eye,
   Image as ImageIcon,
-  Star,
 } from 'lucide-react';
 import { GalleryImage } from '@/types/admin/entities';
 import { StatusBadge } from '../shared/StatusBadge';

@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { contactInfoSchema } from '@/lib/validations';
 import { verifyAdminToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // GET /api/admin/contacts/[id] - Get single contact info
 export async function GET(
@@ -57,7 +55,7 @@ export async function PUT(
     });
 
     return NextResponse.json(contact);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating contact info:', error);
     if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
@@ -65,7 +63,12 @@ export async function PUT(
         { status: 400 }
       );
     }
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Contact info not found' },
         { status: 404 }
@@ -94,9 +97,14 @@ export async function DELETE(
     });
 
     return NextResponse.json({ message: 'Contact info deleted successfully' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting contact info:', error);
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Contact info not found' },
         { status: 404 }

@@ -49,7 +49,6 @@ export default function AttractionsPage() {
     remove,
     isCreating,
     isUpdating,
-    isDeleting,
   } = useAttractions(searchParams);
 
   const categoryFilters: FilterOption[] = ATTRACTION_CATEGORIES.map(

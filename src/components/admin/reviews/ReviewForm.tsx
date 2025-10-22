@@ -28,14 +28,6 @@ const defaultFormData: ReviewFormData = {
   isVisible: true,
 };
 
-const ratingOptions = [
-  { label: '5 Stars - Excellent', value: '5' },
-  { label: '4 Stars - Very Good', value: '4' },
-  { label: '3 Stars - Good', value: '3' },
-  { label: '2 Stars - Fair', value: '2' },
-  { label: '1 Star - Poor', value: '1' },
-];
-
 export function ReviewForm({
   isOpen,
   onClose,
@@ -51,31 +43,35 @@ export function ReviewForm({
         ...data,
         attractionId: data.attractionId || undefined,
       };
-      onSubmit(cleanedData);
+      onSubmit(cleanedData as ReviewFormData);
     },
     validate: (data) => {
       const errors: Record<string, string> = {};
+      const name = data.name as string | undefined;
+      const email = data.email as string | undefined;
+      const comment = data.comment as string | undefined;
+      const rating = data.rating as number;
 
-      if (!data.name?.trim()) {
+      if (!name?.trim()) {
         errors.name = 'Name is required';
       }
 
-      if (!data.email?.trim()) {
+      if (!email?.trim()) {
         errors.email = 'Email is required';
       } else {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(data.email)) {
+        if (!emailRegex.test(email)) {
           errors.email = 'Please enter a valid email address';
         }
       }
 
-      if (!data.comment?.trim()) {
+      if (!comment?.trim()) {
         errors.comment = 'Review comment is required';
-      } else if (data.comment.trim().length < 10) {
+      } else if (comment.trim().length < 10) {
         errors.comment = 'Review must be at least 10 characters long';
       }
 
-      if (data.rating < 1 || data.rating > 5) {
+      if (rating < 1 || rating > 5) {
         errors.rating = 'Rating must be between 1 and 5';
       }
 
@@ -89,6 +85,7 @@ export function ReviewForm({
   }));
 
   const renderStarRating = () => {
+    const rating = form.data.rating as number;
     return (
       <div className="space-y-2">
         <label className="text-sm font-medium">Rating *</label>
@@ -99,19 +96,19 @@ export function ReviewForm({
               type="button"
               onClick={() => form.setValue('rating', star)}
               className={`p-1 rounded transition-colors ${
-                star <= form.data.rating
+                star <= rating
                   ? 'text-yellow-500 hover:text-yellow-600'
                   : 'text-gray-300 hover:text-gray-400'
               }`}
             >
               <Star
                 className="w-6 h-6"
-                fill={star <= form.data.rating ? 'currentColor' : 'none'}
+                fill={star <= rating ? 'currentColor' : 'none'}
               />
             </button>
           ))}
           <span className="ml-2 text-sm text-gray-600">
-            ({form.data.rating} out of 5 stars)
+            ({rating} out of 5 stars)
           </span>
         </div>
         {form.errors?.rating && (
@@ -184,19 +181,20 @@ export function ReviewForm({
           />
         </div>
 
-        {!form.data.isApproved && (
+        {!(form.data.isApproved as boolean) && (
           <div className="text-sm text-amber-600 bg-amber-50 p-3 rounded-md">
             <strong>Note:</strong> This review is not yet approved and will not
             be visible to the public until approved.
           </div>
         )}
 
-        {form.data.isApproved && !form.data.isVisible && (
-          <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
-            <strong>Note:</strong> This review is approved but hidden from
-            public view.
-          </div>
-        )}
+        {(form.data.isApproved as boolean) &&
+          !(form.data.isVisible as boolean) && (
+            <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
+              <strong>Note:</strong> This review is approved but hidden from
+              public view.
+            </div>
+          )}
       </div>
     </FormDialog>
   );

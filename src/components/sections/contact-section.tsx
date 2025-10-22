@@ -80,7 +80,7 @@ export function ContactSection({
             ? [ci.value, ci.description]
             : [ci.value];
 
-          let Icon = MapPin as any;
+          let Icon = MapPin;
           switch (ci.type) {
             case 'PHONE':
               Icon = Phone;
@@ -103,7 +103,7 @@ export function ContactSection({
             title: ci.title || ci.type,
             details,
             color: 'text-gray-700',
-          } as any;
+          };
         })
       : defaultContactInfo;
 
@@ -145,13 +145,6 @@ export function ContactSection({
     window.location.href = `mailto:info@sumpangbita.com?subject=${subject}&body=${body}`;
   };
 
-  const handleWhatsApp = () => {
-    const message = encodeURIComponent(
-      'Halo! Saya ingin mengetahui informasi lebih lanjut tentang wisata Sumpang Bita. Bisa dibantu?'
-    );
-    window.open(`https://wa.me/6281145678900?text=${message}`, '_blank');
-  };
-
   return (
     <section id="contact" className={`py-20 bg-white ${className}`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -186,7 +179,7 @@ export function ContactSection({
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
               >
-                {dynamicContactInfo.map((info: any, index: number) => (
+                {dynamicContactInfo.map((info, index: number) => (
                   <motion.div
                     key={info.title + index}
                     initial={{ opacity: 0, y: 30 }}
@@ -241,7 +234,7 @@ export function ContactSection({
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="aspect-square bg-gradient-to-br from-blue-100 to-green-100 rounded-lg flex items-center justify-center mb-4">
+                  <div className="aspect-square bg-linear-to-br from-blue-100 to-green-100 rounded-lg flex items-center justify-center mb-4">
                     <div className="text-center text-gray-600">
                       <MapPin className="w-12 h-12 mx-auto mb-2 text-blue-600" />
                       <p className="text-sm font-medium">Peta Interaktif</p>
@@ -282,7 +275,7 @@ export function ContactSection({
                 >
                   <Card className="h-full text-center hover:shadow-lg transition-shadow duration-300">
                     <CardContent className="p-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                         <info.icon className="w-6 h-6 text-white" />
                       </div>
                       <h4 className="font-semibold text-gray-900 mb-3">
@@ -304,7 +297,7 @@ export function ContactSection({
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
           >
-            <Card className="bg-gradient-to-r from-blue-50 to-green-50 border-0">
+            <Card className="bg-linear-to-r from-blue-50 to-green-50 border-0">
               <CardContent className="p-8 text-center">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   Butuh Bantuan Merencanakan Perjalanan?
@@ -317,7 +310,7 @@ export function ContactSection({
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
                     size="lg"
-                    className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
+                    className="bg-linear-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
                     onClick={handleCallNow}
                   >
                     <Phone className="w-5 h-5 mr-2" />

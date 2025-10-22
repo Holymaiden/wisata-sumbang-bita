@@ -6,11 +6,9 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import { Menu, X, MapPin } from 'lucide-react';
 
@@ -57,7 +55,7 @@ export function Header({
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-linear-to-r from-blue-600 to-green-600 rounded-full flex items-center justify-center">
               <MapPin className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold text-gray-900">{siteTitle}</span>
@@ -70,7 +68,7 @@ export function Header({
                   <NavigationMenuLink asChild>
                     <Link
                       href={item.href}
-                      className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+                      className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-active:bg-accent/50 data-[state=open]:bg-accent/50"
                     >
                       {item.label}
                     </Link>
@@ -81,7 +79,7 @@ export function Header({
           </NavigationMenu>
 
           <Button
-            className="hidden md:inline-flex bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
+            className="hidden md:inline-flex bg-linear-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
             onClick={handlePlanTrip}
           >
             Rencanakan Perjalanan
@@ -122,7 +120,7 @@ export function Header({
               ))}
               <div className="pt-4 pb-2">
                 <Button
-                  className="w-full bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
+                  className="w-full bg-linear-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     handlePlanTrip();

@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { ApiResponse, MutationOptions } from '@/types/admin';
 
-interface UseCrudOptions<T> {
+interface UseCrudOptions {
   queryKey: string[];
   endpoint: string;
   searchParams?: Record<string, string>;
@@ -14,7 +14,7 @@ export function useCrud<T, TFormData = Partial<T>>({
   queryKey,
   endpoint,
   searchParams = {},
-}: UseCrudOptions<T>) {
+}: UseCrudOptions) {
   const queryClient = useQueryClient();
 
   const query = useQuery({

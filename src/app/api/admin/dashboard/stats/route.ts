@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { verifyAdminToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // GET /api/admin/dashboard/stats - Get dashboard statistics
 export async function GET(request: NextRequest) {
@@ -153,20 +151,36 @@ export async function GET(request: NextRequest) {
       bookingGrowth,
       averageRating: avgRating._avg.rating || 0,
       totalViews: estimatedViews,
-      recentReviews: recentReviews.map((review) => ({
-        id: review.id,
-        name: review.name,
-        rating: review.rating,
-        attraction: review.attraction?.title || 'Unknown',
-        createdAt: review.createdAt,
-      })),
-      recentBookings: recentBookings.map((booking) => ({
-        id: booking.id,
-        name: booking.name,
-        email: booking.email,
-        status: booking.status,
-        createdAt: booking.createdAt,
-      })),
+      recentReviews: recentReviews.map(
+        (review: {
+          id: string;
+          name: string;
+          rating: number;
+          attraction?: { title: string } | null;
+          createdAt: Date;
+        }) => ({
+          id: review.id,
+          name: review.name,
+          rating: review.rating,
+          attraction: review.attraction?.title || 'Unknown',
+          createdAt: review.createdAt,
+        })
+      ),
+      recentBookings: recentBookings.map(
+        (booking: {
+          id: string;
+          name: string;
+          email: string;
+          status: string;
+          createdAt: Date;
+        }) => ({
+          id: booking.id,
+          name: booking.name,
+          email: booking.email,
+          status: booking.status,
+          createdAt: booking.createdAt,
+        })
+      ),
     };
 
     return NextResponse.json(stats);

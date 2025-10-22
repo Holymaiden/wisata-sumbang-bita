@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -12,13 +12,13 @@ import {
   Clock,
   Star,
   Users,
-  Camera,
   Navigation,
   Phone,
   Calendar,
   Info,
   ExternalLink,
 } from 'lucide-react';
+import Image from 'next/image';
 
 interface AttractionImage {
   url: string;
@@ -75,9 +75,6 @@ export function AttractionDetailModal({
           .map((img) => img.url)
       : ['/api/placeholder/800/600'];
 
-  const primaryImage =
-    attraction.images?.find((img) => img.isPrimary)?.url || images[0];
-
   const attractionDetails = {
     1: {
       fullDescription:
@@ -123,7 +120,7 @@ export function AttractionDetailModal({
     },
   };
 
-  const currentDetail = (attractionDetails as any)[
+  const currentDetail = attractionDetails[
     attraction.id as keyof typeof attractionDetails
   ] || {
     fullDescription: attraction.description,
@@ -190,7 +187,7 @@ export function AttractionDetailModal({
           >
             <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-linear-to-r from-blue-600 to-green-600 rounded-full flex items-center justify-center">
                   <div className="w-5 h-5 bg-white rounded-sm" />
                 </div>
                 <div>
@@ -212,14 +209,15 @@ export function AttractionDetailModal({
 
             <div className="p-6 space-y-8">
               <div className="space-y-4">
-                <div className="aspect-[16/9] bg-gradient-to-br from-blue-400 to-green-500 rounded-xl overflow-hidden relative">
-                  <img
+                <div className="aspect-video bg-linear-to-br from-blue-400 to-green-500 rounded-xl overflow-hidden relative">
+                  <Image
                     src={images[currentImageIndex]}
                     alt={
                       attraction.images?.[currentImageIndex]?.alt ||
-                      attraction.title
+                      `${attraction.title} ${currentImageIndex + 1}`
                     }
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                   <div className="absolute inset-0 bg-black/20 flex items-end">
                     <div className="p-4 text-white">
@@ -242,19 +240,20 @@ export function AttractionDetailModal({
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
-                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
+                      className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
                         currentImageIndex === index
                           ? 'border-blue-600'
                           : 'border-transparent'
                       }`}
                     >
-                      <img
+                      <Image
                         src={imageUrl}
                         alt={
                           attraction.images?.[index]?.alt ||
                           `${attraction.title} ${index + 1}`
                         }
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                       />
                     </button>
                   ))}
@@ -302,20 +301,23 @@ export function AttractionDetailModal({
               <div>
                 <h3 className="text-lg font-semibold mb-3">Fitur Unggulan</h3>
                 <div className="flex flex-wrap gap-2">
-                  {(currentDetail.features || []).map(
-                    (feature: AttractionFeature, index: number) => (
-                      <Badge
-                        key={index}
-                        variant="outline"
-                        className="px-3 py-1"
-                      >
-                        {feature.icon && (
-                          <span className="mr-1">{feature.icon}</span>
-                        )}
-                        {feature.name}
-                      </Badge>
+                  {
+                    // @ts-expect-error - err
+                    (currentDetail.features || []).map(
+                      (feature: AttractionFeature, index: number) => (
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="px-3 py-1"
+                        >
+                          {feature.icon && (
+                            <span className="mr-1">{feature.icon}</span>
+                          )}
+                          {feature.name}
+                        </Badge>
+                      )
                     )
-                  )}
+                  }
                 </div>
               </div>
 
@@ -341,7 +343,7 @@ export function AttractionDetailModal({
                   {(currentDetail.tips || []).map(
                     (tip: string, index: number) => (
                       <div key={index} className="flex items-start space-x-2">
-                        <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <Info className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
                         <span className="text-sm text-gray-700">{tip}</span>
                       </div>
                     )
@@ -353,7 +355,7 @@ export function AttractionDetailModal({
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
+                  className="flex-1 bg-linear-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
                   onClick={handleBookNow}
                 >
                   <Phone className="w-4 h-4 mr-2" />

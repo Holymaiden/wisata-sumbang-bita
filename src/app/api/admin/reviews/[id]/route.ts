@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { reviewSchema } from '@/lib/validations';
 import { verifyAdminToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // GET /api/admin/reviews/[id] - Get single review
 export async function GET(
@@ -73,7 +71,7 @@ export async function PUT(
     });
 
     return NextResponse.json(review);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating review:', error);
     if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
@@ -81,7 +79,12 @@ export async function PUT(
         { status: 400 }
       );
     }
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Review not found' },
         { status: 404 }
@@ -110,9 +113,14 @@ export async function DELETE(
     });
 
     return NextResponse.json({ message: 'Review deleted successfully' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting review:', error);
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Review not found' },
         { status: 404 }
@@ -153,9 +161,14 @@ export async function PATCH(
     });
 
     return NextResponse.json(review);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating review approval:', error);
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Review not found' },
         { status: 404 }

@@ -66,20 +66,26 @@ export function AttractionForm({
   const form = useFormState(defaultFormData, {
     initialData,
     onSubmit: (data) => {
-      onSubmit(data);
+      onSubmit(data as AttractionFormData);
     },
     validate: (data) => {
       const errors: Record<string, string> = {};
+      const title = data.title as string | undefined;
+      const slug = data.slug as string | undefined;
+      const description = data.description as string | undefined;
+      const duration = data.duration as string | undefined;
+      const ticketPrice = data.ticketPrice as number;
+      const ticketPriceChild = data.ticketPriceChild as number | undefined;
 
-      if (!data.title?.trim()) {
+      if (!title?.trim()) {
         errors.title = 'Title is required';
       }
 
-      if (!data.slug?.trim()) {
+      if (!slug?.trim()) {
         errors.slug = 'Slug is required';
       }
 
-      if (!data.description?.trim()) {
+      if (!description?.trim()) {
         errors.description = 'Description is required';
       }
 
@@ -87,15 +93,15 @@ export function AttractionForm({
         errors.category = 'Category is required';
       }
 
-      if (!data.duration?.trim()) {
+      if (!duration?.trim()) {
         errors.duration = 'Duration is required';
       }
 
-      if (data.ticketPrice < 0) {
+      if (ticketPrice < 0) {
         errors.ticketPrice = 'Ticket price cannot be negative';
       }
 
-      if (data.ticketPriceChild && data.ticketPriceChild < 0) {
+      if (ticketPriceChild && ticketPriceChild < 0) {
         errors.ticketPriceChild = 'Child ticket price cannot be negative';
       }
 
@@ -157,7 +163,7 @@ export function AttractionForm({
                 required
                 placeholder="Enter attraction title"
                 onChange={handleTitleChange}
-                value={form.data.title}
+                value={form.data.title as string}
               />
 
               <TextField

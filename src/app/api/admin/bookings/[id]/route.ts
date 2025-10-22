@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { bookingSchema } from '@/lib/validations';
 import { verifyAdminToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // GET /api/admin/bookings/[id] - Get single booking inquiry
 export async function GET(
@@ -64,7 +62,7 @@ export async function PUT(
     });
 
     return NextResponse.json(booking);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating booking:', error);
     if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
@@ -72,7 +70,12 @@ export async function PUT(
         { status: 400 }
       );
     }
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Booking not found' },
         { status: 404 }
@@ -101,9 +104,14 @@ export async function DELETE(
     });
 
     return NextResponse.json({ message: 'Booking deleted successfully' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting booking:', error);
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Booking not found' },
         { status: 404 }

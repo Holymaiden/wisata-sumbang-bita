@@ -6,17 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AttractionDetailModal } from '@/components/ui/attraction-detail-modal';
-import {
-  Mountain,
-  Droplets,
-  TreePine,
-  Camera,
-  Star,
-  Clock,
-  MapPin,
-  Eye,
-  Download,
-} from 'lucide-react';
+import { Camera, Star, Clock, MapPin, Download } from 'lucide-react';
+import Image from 'next/image';
 
 interface AttractionImage {
   url: string;
@@ -133,10 +124,10 @@ export function AttractionsSection({
                   viewport={{ once: true }}
                 >
                   <Card className="h-full hover:shadow-xl transition-all duration-300 group cursor-pointer overflow-hidden">
-                    <div className="relative aspect-[4/3] bg-gradient-to-br from-blue-400 to-green-500 overflow-hidden">
+                    <div className="relative aspect-4/3 bg-linear-to-br from-blue-400 to-green-500 overflow-hidden">
                       {attraction.images && attraction.images.length > 0 ? (
                         <>
-                          <img
+                          <Image
                             src={
                               attraction.images.find((img) => img.isPrimary)
                                 ?.url || attraction.images[0]?.url
@@ -145,7 +136,13 @@ export function AttractionsSection({
                               attraction.images.find((img) => img.isPrimary)
                                 ?.alt || attraction.title
                             }
+                            width={400}
+                            height={300}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src =
+                                '/placeholder-image.jpg';
+                            }}
                           />
                           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
                         </>
@@ -246,7 +243,7 @@ export function AttractionsSection({
               viewport={{ once: true }}
               className="text-center mt-16"
             >
-              <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-2xl p-8">
+              <div className="bg-linear-to-r from-blue-50 to-green-50 rounded-2xl p-8">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   Siap Menjelajahi Semua Destinasi?
                 </h3>
@@ -256,7 +253,7 @@ export function AttractionsSection({
                 </p>
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
+                  className="bg-linear-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
                   onClick={handleDownloadGuide}
                 >
                   <Download className="w-5 h-5 mr-2" />
@@ -272,7 +269,7 @@ export function AttractionsSection({
         attraction={
           selectedAttraction
             ? {
-                id: selectedAttraction.id as any,
+                id: selectedAttraction.id,
                 title: selectedAttraction.title || '',
                 description: selectedAttraction.description || '',
                 category: selectedAttraction.category || '',

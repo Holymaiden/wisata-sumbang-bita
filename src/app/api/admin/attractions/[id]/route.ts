@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { attractionSchema } from '@/lib/validations';
 import { verifyAdminToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // GET /api/admin/attractions/[id] - Get single attraction
 export async function GET(
@@ -62,7 +60,7 @@ export async function PUT(
     const { images, features, ...attractionData } = validatedData;
 
     const attraction = await prisma.$transaction(async (tx) => {
-      const updatedAttraction = await tx.attraction.update({
+      await tx.attraction.update({
         where: { id: params.id },
         data: attractionData,
       });
@@ -115,7 +113,7 @@ export async function PUT(
     });
 
     return NextResponse.json(attraction);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating attraction:', error);
     if (error instanceof Error && error.name === 'ZodError') {
       return NextResponse.json(
@@ -123,7 +121,12 @@ export async function PUT(
         { status: 400 }
       );
     }
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Attraction not found' },
         { status: 404 }
@@ -152,9 +155,14 @@ export async function DELETE(
     });
 
     return NextResponse.json({ message: 'Attraction deleted successfully' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting attraction:', error);
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Attraction not found' },
         { status: 404 }

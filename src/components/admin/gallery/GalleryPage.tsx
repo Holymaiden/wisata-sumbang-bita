@@ -45,7 +45,6 @@ export default function GalleryPage() {
     remove,
     isCreating,
     isUpdating,
-    isDeleting,
   } = useGallery(searchParams);
 
   const categoryFilters: FilterOption[] = GALLERY_CATEGORIES.map(

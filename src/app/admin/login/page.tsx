@@ -44,7 +44,7 @@ export default function AdminLogin() {
       } else {
         setError(data.message || 'Login failed');
       }
-    } catch (error) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);

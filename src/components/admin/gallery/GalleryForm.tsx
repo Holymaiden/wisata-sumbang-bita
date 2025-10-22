@@ -10,6 +10,7 @@ import {
 import { useFormState } from '@/hooks/admin/useFormState';
 import { GalleryFormData, GALLERY_CATEGORIES } from '@/types/admin/entities';
 import { BaseFormProps } from '@/types/admin';
+import Image from 'next/image';
 
 interface GalleryFormProps
   extends Omit<BaseFormProps<GalleryFormData>, 'onSubmit'> {
@@ -45,22 +46,26 @@ export function GalleryForm({
     onSubmit: (data) => {
       const cleanedData = {
         ...data,
-        description: data.description?.trim() || undefined,
-        alt: data.alt?.trim() || undefined,
-        tags: data.tags?.trim() || undefined,
+        description:
+          (data.description as string | undefined)?.trim() || undefined,
+        alt: (data.alt as string | undefined)?.trim() || undefined,
+        tags: (data.tags as string | undefined)?.trim() || undefined,
       };
-      onSubmit(cleanedData);
+      onSubmit(cleanedData as GalleryFormData);
     },
     validate: (data) => {
       const errors: Record<string, string> = {};
+      const title = data.title as string | undefined;
+      const url = data.url as string | undefined;
+      const order = data.order as number;
 
-      if (!data.title?.trim()) {
+      if (!title?.trim()) {
         errors.title = 'Title is required';
       }
 
-      if (!data.url?.trim()) {
+      if (!url?.trim()) {
         errors.url = 'Image URL is required';
-      } else if (!isValidUrl(data.url)) {
+      } else if (!isValidUrl(url)) {
         errors.url = 'Please enter a valid URL';
       }
 
@@ -68,7 +73,7 @@ export function GalleryForm({
         errors.category = 'Category is required';
       }
 
-      if (data.order < 0) {
+      if (order < 0) {
         errors.order = 'Order cannot be negative';
       }
 
@@ -80,7 +85,7 @@ export function GalleryForm({
     try {
       new URL(string);
       return true;
-    } catch (_) {
+    } catch {
       return false;
     }
   };
@@ -184,14 +189,15 @@ export function GalleryForm({
             <label className="text-sm font-medium">Preview</label>
             <div className="mt-2 border rounded-lg p-4 bg-muted/30">
               <div className="relative h-48 w-full rounded-lg overflow-hidden bg-white">
-                <img
+                <Image
                   src={form.data.url as string}
                   alt={
                     (form.data.alt as string) ||
                     (form.data.title as string) ||
                     'Preview'
                   }
-                  className="h-full w-full object-contain"
+                  fill
+                  className="object-contain"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}

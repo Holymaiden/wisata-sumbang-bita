@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { TextField, TextAreaField } from '../shared/FormFields';
 import { useFormState } from '@/hooks/admin/useFormState';
 import { Plus, Edit, Trash2, Zap } from 'lucide-react';
@@ -14,12 +14,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-export interface AttractionFeature {
-  id?: string;
-  name: string;
-  icon?: string;
-  description?: string;
-}
+import type { AttractionFeature } from '@/types/admin/entities';
 
 interface AttractionFeatureManagerProps {
   features: AttractionFeature[];
@@ -60,16 +55,17 @@ export function AttractionFeatureManager({
   const form = useFormState(defaultFeatureData, {
     initialData: editingFeature || undefined,
     onSubmit: (data) => {
+      const featureData = data as AttractionFeature;
       if (editingFeature?.id) {
         const updatedFeatures = features.map((feature) =>
           feature.id === editingFeature.id
-            ? { ...editingFeature, ...data }
+            ? { ...editingFeature, ...featureData }
             : feature
         );
         onChange(updatedFeatures);
       } else {
         const newFeature: AttractionFeature = {
-          ...data,
+          ...featureData,
           id: Date.now().toString(),
         };
         onChange([...features, newFeature]);
@@ -80,8 +76,9 @@ export function AttractionFeatureManager({
     },
     validate: (data) => {
       const errors: Record<string, string> = {};
+      const name = data.name as string | undefined;
 
-      if (!data.name?.trim()) {
+      if (!name?.trim()) {
         errors.name = 'Feature name is required';
       }
 
@@ -122,8 +119,8 @@ export function AttractionFeatureManager({
           <CardContent className="flex flex-col items-center justify-center py-8">
             <Zap className="w-12 h-12 text-gray-400 mb-4" />
             <p className="text-gray-500 text-center">
-              No features added yet. Click "Add Feature" to highlight what makes
-              this attraction special.
+              No features added yet. Click &quot;Add Feature&quot; to highlight
+              what makes this attraction special.
             </p>
           </CardContent>
         </Card>
@@ -217,7 +214,7 @@ export function AttractionFeatureManager({
               <TextField
                 {...form.getFieldProps('icon')}
                 placeholder="Or enter custom emoji/icon"
-                value={form.data.icon || ''}
+                value={(form.data.icon as string) || ''}
               />
             </div>
 

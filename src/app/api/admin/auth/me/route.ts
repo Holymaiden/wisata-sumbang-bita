@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
+import { verifyToken, type TokenPayload } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
@@ -11,12 +11,12 @@ export async function GET(request: NextRequest) {
     }
 
     const payload = verifyToken(token);
-    if (!payload) {
+    if (!payload || typeof payload === 'string') {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
     const admin = await prisma.admin.findUnique({
-      where: { id: payload.adminId },
+      where: { id: (payload as TokenPayload).adminId },
       select: {
         id: true,
         username: true,

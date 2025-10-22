@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Eye, Calendar, Hash, Image as ImageIcon } from 'lucide-react';
+import { Eye, Hash, Image as ImageIcon } from 'lucide-react';
 import { GalleryImage } from '@/types/admin/entities';
 import Image from 'next/image';
 

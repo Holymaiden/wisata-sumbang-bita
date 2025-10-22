@@ -14,13 +14,7 @@ import {
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -55,7 +49,6 @@ import {
   Users,
   Phone,
   Mail,
-  MessageSquare,
   Clock,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';

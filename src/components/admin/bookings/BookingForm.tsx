@@ -44,57 +44,64 @@ export function BookingForm({
       const cleanedData = {
         ...data,
         attractionId: data.attractionId || undefined,
-        message: data.message?.trim() || undefined,
-        adminNotes: data.adminNotes?.trim() || undefined,
+        message: (data.message as string | undefined)?.trim() || undefined,
+        adminNotes:
+          (data.adminNotes as string | undefined)?.trim() || undefined,
       };
-      onSubmit(cleanedData);
+      onSubmit(cleanedData as BookingFormData);
     },
     validate: (data) => {
       const errors: Record<string, string> = {};
+      const name = data.name as string | undefined;
+      const email = data.email as string | undefined;
+      const phone = data.phone as string | undefined;
+      const visitDate = data.visitDate as string | undefined;
+      const guestCount = data.guestCount as number;
+      const totalAmount = data.totalAmount as number;
 
-      if (!data.name?.trim()) {
+      if (!name?.trim()) {
         errors.name = 'Name is required';
       }
 
-      if (!data.email?.trim()) {
+      if (!email?.trim()) {
         errors.email = 'Email is required';
       } else {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(data.email)) {
+        if (!emailRegex.test(email)) {
           errors.email = 'Please enter a valid email address';
         }
       }
 
-      if (!data.phone?.trim()) {
+      if (!phone?.trim()) {
         errors.phone = 'Phone number is required';
       } else {
         const phoneRegex = /^[\+]?[\d\s\-\(\)]+$/;
-        if (!phoneRegex.test(data.phone)) {
+        if (!phoneRegex.test(phone)) {
           errors.phone = 'Please enter a valid phone number';
         }
       }
 
-      if (!data.visitDate) {
+      if (!visitDate) {
         errors.visitDate = 'Visit date is required';
       } else {
-        const visitDate = new Date(data.visitDate);
+        const visitDateObj = new Date(visitDate);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        if (visitDate < today) {
+        if (visitDateObj < today) {
           errors.visitDate = 'Visit date cannot be in the past';
         }
       }
 
-      if (data.guestCount < 1) {
+      if (guestCount < 1) {
         errors.guestCount = 'At least 1 guest is required';
       }
 
-      if (data.guestCount > 50) {
+      if (guestCount > 50) {
         errors.guestCount = 'Maximum 50 guests allowed';
       }
 
-      if (data.totalAmount < 0) {
+      if (totalAmount < 0) {
         errors.totalAmount = 'Total amount cannot be negative';
       }
 
@@ -174,7 +181,7 @@ export function BookingForm({
             label="Visit Date"
             required
             placeholder="YYYY-MM-DD"
-            value={formatDate(form.data.visitDate)}
+            value={formatDate(form.data.visitDate as string)}
             description="Enter date in YYYY-MM-DD format"
           />
 
@@ -201,8 +208,8 @@ export function BookingForm({
             }
             value={String(form.data.totalAmount)}
             description={
-              form.data.totalAmount > 0
-                ? `Amount: ${formatCurrency(form.data.totalAmount)}`
+              (form.data.totalAmount as number) > 0
+                ? `Amount: ${formatCurrency(form.data.totalAmount as number)}`
                 : undefined
             }
           />
@@ -232,7 +239,7 @@ export function BookingForm({
         />
       </div>
 
-      {form.data.status && form.data.status !== 'PENDING' && (
+      {form.data.status && (form.data.status as string) !== 'PENDING' && (
         <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
           <strong>Status Guidelines:</strong>
           <ul className="mt-1 space-y-1">

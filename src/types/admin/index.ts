@@ -45,7 +45,7 @@ export interface StatusBadgeProps {
   variant?: 'default' | 'secondary' | 'destructive' | 'outline';
 }
 
-export interface TableConfig<T> {
+export interface TableConfig {
   searchKey?: string;
   defaultSort?: {
     field: string;

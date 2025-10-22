@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 // GET /api/public/landing - Get all landing page data
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const [attractions, gallery, uniqueCategories, settingsRows, contactInfos] =
       await Promise.all([

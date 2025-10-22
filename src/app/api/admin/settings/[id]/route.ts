@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { verifyAdminToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 const settingSchema = z.object({
   key: z.string().min(1, 'Key is required'),
@@ -80,7 +78,7 @@ export async function PUT(
     });
 
     return NextResponse.json(setting);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating setting:', error);
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -88,7 +86,12 @@ export async function PUT(
         { status: 400 }
       );
     }
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Setting not found' },
         { status: 404 }
@@ -117,9 +120,14 @@ export async function DELETE(
     });
 
     return NextResponse.json({ message: 'Setting deleted successfully' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting setting:', error);
-    if (error.code === 'P2025') {
+    if (
+      error &&
+      typeof error === 'object' &&
+      'code' in error &&
+      error.code === 'P2025'
+    ) {
       return NextResponse.json(
         { message: 'Setting not found' },
         { status: 404 }

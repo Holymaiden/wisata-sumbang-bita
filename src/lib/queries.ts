@@ -1,8 +1,4 @@
-import {
-  createQuery,
-  createMutation,
-  createInfiniteQuery,
-} from 'react-query-kit';
+import { createQuery, createMutation } from 'react-query-kit';
 
 export const useAuth = createQuery({
   queryKey: ['auth'],
@@ -60,7 +56,7 @@ export const useAttraction = createQuery({
 });
 
 export const useCreateAttraction = createMutation({
-  mutationFn: async (data: any) => {
+  mutationFn: async (data: unknown) => {
     const response = await fetch('/api/admin/attractions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -72,7 +68,7 @@ export const useCreateAttraction = createMutation({
 });
 
 export const useUpdateAttraction = createMutation({
-  mutationFn: async ({ id, data }: { id: number; data: any }) => {
+  mutationFn: async ({ id, data }: { id: number; data: unknown }) => {
     const response = await fetch(`/api/admin/attractions/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -118,7 +114,7 @@ export const useGalleryImages = createQuery({
 });
 
 export const useCreateGalleryImage = createMutation({
-  mutationFn: async (data: any) => {
+  mutationFn: async (data: unknown) => {
     const response = await fetch('/api/admin/gallery', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -130,7 +126,7 @@ export const useCreateGalleryImage = createMutation({
 });
 
 export const useUpdateGalleryImage = createMutation({
-  mutationFn: async ({ id, data }: { id: number; data: any }) => {
+  mutationFn: async ({ id, data }: { id: number; data: unknown }) => {
     const response = await fetch(`/api/admin/gallery/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },

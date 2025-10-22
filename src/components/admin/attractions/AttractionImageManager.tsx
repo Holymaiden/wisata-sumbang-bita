@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TextField, TextAreaField, SwitchField } from '../shared/FormFields';
 import { useFormState } from '@/hooks/admin/useFormState';
@@ -13,17 +13,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
-
-export interface AttractionImage {
-  id?: string;
-  url: string;
-  alt?: string;
-  caption?: string;
-  isPrimary: boolean;
-  order: number;
-}
+import type { AttractionImage } from '@/types/admin/entities';
 
 interface AttractionImageManagerProps {
   images: AttractionImage[];
@@ -61,7 +52,7 @@ export function AttractionImageManager({
         const newImage: AttractionImage = {
           ...data,
           id: Date.now().toString(),
-        };
+        } as AttractionImage;
         onChange([...images, newImage]);
       }
       setShowForm(false);
@@ -69,14 +60,16 @@ export function AttractionImageManager({
     },
     validate: (data) => {
       const errors: Record<string, string> = {};
+      const url = data.url as string | undefined;
+      const order = data.order as number;
 
-      if (!data.url?.trim()) {
+      if (!url?.trim()) {
         errors.url = 'Image URL is required';
-      } else if (!isValidUrl(data.url)) {
+      } else if (!isValidUrl(url)) {
         errors.url = 'Please enter a valid URL';
       }
 
-      if (data.order < 0) {
+      if (order < 0) {
         errors.order = 'Order cannot be negative';
       }
 
@@ -88,7 +81,7 @@ export function AttractionImageManager({
     try {
       new URL(string);
       return true;
-    } catch (_) {
+    } catch {
       return false;
     }
   };
@@ -130,9 +123,13 @@ export function AttractionImageManager({
       {images.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-8">
-            <Image className="w-12 h-12 text-gray-400 mb-4" />
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+            <Image
+              className="w-12 h-12 text-gray-400 mb-4"
+              aria-hidden="true"
+            />
             <p className="text-gray-500 text-center">
-              No images added yet. Click "Add Image" to get started.
+              No images added yet. Click &quot;Add Image&quot; to get started.
             </p>
           </CardContent>
         </Card>
@@ -143,6 +140,7 @@ export function AttractionImageManager({
             .map((image) => (
               <Card key={image.id} className="overflow-hidden">
                 <div className="relative aspect-video bg-gray-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={image.url}
                     alt={image.alt || 'Attraction image'}
@@ -272,26 +270,26 @@ export function AttractionImageManager({
               </div>
             </div>
 
-            {/* Image Preview */}
             {form.data.url &&
-              typeof form.data.url === 'string' &&
-              isValidUrl(form.data.url) && (
-                <div>
-                  <label className="text-sm font-medium">Preview</label>
-                  <div className="mt-2 border rounded-lg p-4 bg-muted/30">
-                    <div className="relative aspect-video w-full max-w-md rounded-lg overflow-hidden bg-white">
-                      <img
-                        src={form.data.url}
-                        alt={form.data.alt || 'Image preview'}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                    </div>
+            typeof form.data.url === 'string' &&
+            isValidUrl(form.data.url as string) ? (
+              <div>
+                <label className="text-sm font-medium">Preview</label>
+                <div className="mt-2 border rounded-lg p-4 bg-muted/30">
+                  <div className="relative aspect-video w-full max-w-md rounded-lg overflow-hidden bg-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={form.data.url as string}
+                      alt={(form.data.alt as string) || 'Image preview'}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
                   </div>
                 </div>
-              )}
+              </div>
+            ) : null}
 
             <div className="flex justify-end gap-2">
               <Button
