@@ -6,7 +6,7 @@ import { verifyAdminToken } from '@/lib/auth';
 // GET /api/admin/attractions/[id] - Get single attraction
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -14,8 +14,10 @@ export async function GET(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     const attraction = await prisma.attraction.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         images: true,
         features: true,
@@ -46,7 +48,7 @@ export async function GET(
 // PUT /api/admin/attractions/[id] - Update attraction
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -54,6 +56,7 @@ export async function PUT(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const validatedData = attractionSchema.parse(body);
 
@@ -61,19 +64,19 @@ export async function PUT(
 
     const attraction = await prisma.$transaction(async (tx) => {
       await tx.attraction.update({
-        where: { id: params.id },
+        where: { id },
         data: attractionData,
       });
 
       if (images !== undefined) {
         await tx.attractionImage.deleteMany({
-          where: { attractionId: params.id },
+          where: { attractionId: id },
         });
 
         if (images.length > 0) {
           await tx.attractionImage.createMany({
             data: images.map((image, index) => ({
-              attractionId: params.id,
+              attractionId: id,
               url: image.url,
               alt: image.alt,
               caption: image.caption,
@@ -86,13 +89,13 @@ export async function PUT(
 
       if (features !== undefined) {
         await tx.attractionFeature.deleteMany({
-          where: { attractionId: params.id },
+          where: { attractionId: id },
         });
 
         if (features.length > 0) {
           await tx.attractionFeature.createMany({
             data: features.map((feature) => ({
-              attractionId: params.id,
+              attractionId: id,
               name: feature.name,
               icon: feature.icon,
               description: feature.description,
@@ -102,7 +105,7 @@ export async function PUT(
       }
 
       return await tx.attraction.findUnique({
-        where: { id: params.id },
+        where: { id },
         include: {
           images: {
             orderBy: { order: 'asc' },
@@ -142,7 +145,7 @@ export async function PUT(
 // DELETE /api/admin/attractions/[id] - Delete attraction
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -150,8 +153,10 @@ export async function DELETE(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await prisma.attraction.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Attraction deleted successfully' });

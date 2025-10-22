@@ -15,7 +15,7 @@ const settingSchema = z.object({
 // GET /api/admin/settings/[id] - Get single setting
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -23,8 +23,10 @@ export async function GET(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     const setting = await prisma.siteSetting.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!setting) {
@@ -47,7 +49,7 @@ export async function GET(
 // PUT /api/admin/settings/[id] - Update setting
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -55,13 +57,14 @@ export async function PUT(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const validatedData = settingSchema.parse(body);
 
     const existingSetting = await prisma.siteSetting.findFirst({
       where: {
         key: validatedData.key,
-        NOT: { id: params.id },
+        NOT: { id },
       },
     });
 
@@ -73,7 +76,7 @@ export async function PUT(
     }
 
     const setting = await prisma.siteSetting.update({
-      where: { id: params.id },
+      where: { id },
       data: validatedData,
     });
 
@@ -107,7 +110,7 @@ export async function PUT(
 // DELETE /api/admin/settings/[id] - Delete setting
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -115,8 +118,10 @@ export async function DELETE(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await prisma.siteSetting.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Setting deleted successfully' });

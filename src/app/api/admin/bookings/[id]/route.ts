@@ -6,7 +6,7 @@ import { verifyAdminToken } from '@/lib/auth';
 // GET /api/admin/bookings/[id] - Get single booking inquiry
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -14,8 +14,10 @@ export async function GET(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     const booking = await prisma.bookingInquiry.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!booking) {
@@ -38,7 +40,7 @@ export async function GET(
 // PUT /api/admin/bookings/[id] - Update booking inquiry
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -46,6 +48,7 @@ export async function PUT(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const validatedData = bookingSchema.parse(body);
 
@@ -57,7 +60,7 @@ export async function PUT(
     };
 
     const booking = await prisma.bookingInquiry.update({
-      where: { id: params.id },
+      where: { id },
       data: dataToUpdate,
     });
 
@@ -91,7 +94,7 @@ export async function PUT(
 // DELETE /api/admin/bookings/[id] - Delete booking inquiry
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -99,8 +102,10 @@ export async function DELETE(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await prisma.bookingInquiry.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Booking deleted successfully' });

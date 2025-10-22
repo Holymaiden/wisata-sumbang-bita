@@ -6,7 +6,7 @@ import { verifyAdminToken } from '@/lib/auth';
 // GET /api/admin/reviews/[id] - Get single review
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -14,8 +14,10 @@ export async function GET(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     const review = await prisma.review.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         attraction: {
           select: {
@@ -46,7 +48,7 @@ export async function GET(
 // PUT /api/admin/reviews/[id] - Update review
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -54,11 +56,12 @@ export async function PUT(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const validatedData = reviewSchema.parse(body);
 
     const review = await prisma.review.update({
-      where: { id: params.id },
+      where: { id },
       data: validatedData,
       include: {
         attraction: {
@@ -100,7 +103,7 @@ export async function PUT(
 // DELETE /api/admin/reviews/[id] - Delete review
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -108,8 +111,10 @@ export async function DELETE(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await prisma.review.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Review deleted successfully' });
@@ -136,7 +141,7 @@ export async function DELETE(
 // PATCH /api/admin/reviews/[id]/approve - Approve/unapprove review
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -144,11 +149,12 @@ export async function PATCH(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const { isApproved } = body;
 
     const review = await prisma.review.update({
-      where: { id: params.id },
+      where: { id },
       data: { isApproved },
       include: {
         attraction: {

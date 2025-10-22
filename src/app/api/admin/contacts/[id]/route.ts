@@ -6,7 +6,7 @@ import { verifyAdminToken } from '@/lib/auth';
 // GET /api/admin/contacts/[id] - Get single contact info
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -14,8 +14,10 @@ export async function GET(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     const contact = await prisma.contactInfo.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!contact) {
@@ -38,7 +40,7 @@ export async function GET(
 // PUT /api/admin/contacts/[id] - Update contact info
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -46,11 +48,12 @@ export async function PUT(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const validatedData = contactInfoSchema.parse(body);
 
     const contact = await prisma.contactInfo.update({
-      where: { id: params.id },
+      where: { id },
       data: validatedData,
     });
 
@@ -84,7 +87,7 @@ export async function PUT(
 // DELETE /api/admin/contacts/[id] - Delete contact info
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await verifyAdminToken(request);
@@ -92,8 +95,10 @@ export async function DELETE(
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     await prisma.contactInfo.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Contact info deleted successfully' });
