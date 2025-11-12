@@ -1,42 +1,39 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+import { Button } from './button';
 import { X } from 'lucide-react';
+import { ReactNode } from 'react';
 
-interface FormDialogProps {
+interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit?: () => void;
-  isLoading?: boolean;
   title: string;
   description?: string;
-  children: React.ReactNode;
-  submitLabel?: string;
-  cancelLabel?: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  children: ReactNode;
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
+  maxHeight?: string;
 }
 
-const sizeClasses = {
-  sm: 'max-w-md',
-  md: 'max-w-lg',
-  lg: 'max-w-2xl',
-  xl: 'max-w-4xl',
-  '2xl': 'max-w-6xl',
+const maxWidthClasses = {
+  sm: 'max-w-sm',
+  md: 'max-w-md',
+  lg: 'max-w-lg',
+  xl: 'max-w-xl',
+  '2xl': 'max-w-2xl',
+  '3xl': 'max-w-3xl',
+  '4xl': 'max-w-4xl',
 };
 
-export function FormDialog({
+export function Modal({
   isOpen,
   onClose,
-  onSubmit,
-  isLoading = false,
   title,
   description,
   children,
-  submitLabel = 'Save',
-  cancelLabel = 'Cancel',
-  size = 'md',
-}: FormDialogProps) {
+  maxWidth = 'xl',
+  maxHeight = '450px',
+}: ModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -54,7 +51,7 @@ export function FormDialog({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: 'spring', duration: 0.3 }}
-            className={`gap-4 border bg-background rounded-lg shadow-lg ${sizeClasses[size]} max-h-[90vh] w-full overflow-auto`}
+            className={`gap-4 border bg-background rounded-lg shadow-lg ${maxWidthClasses[maxWidth]} max-h-[${maxHeight}] mx-8 md:mx-0 overflow-auto w-full`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 left-0 right-0 h-fit w-full bg-background z-50 border-b">
@@ -75,30 +72,13 @@ export function FormDialog({
                   size="sm"
                   onClick={onClose}
                   className="p-2 shrink-0"
-                  disabled={isLoading}
                 >
                   <X className="w-5 h-5" />
                 </Button>
               </div>
             </div>
 
-            <div className="flex flex-col space-y-4 p-6">{children}</div>
-
-            <div className="sticky bottom-0 left-0 right-0 bg-background border-t p-6 flex justify-end gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onClose}
-                disabled={isLoading}
-              >
-                {cancelLabel}
-              </Button>
-              {onSubmit && (
-                <Button type="button" onClick={onSubmit} disabled={isLoading}>
-                  {isLoading ? 'Saving...' : submitLabel}
-                </Button>
-              )}
-            </div>
+            <div className="flex flex-col space-y-6 p-6">{children}</div>
           </motion.div>
         </motion.div>
       )}

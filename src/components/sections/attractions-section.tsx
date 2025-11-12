@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AttractionDetailModal } from '@/components/ui/attraction-detail-modal';
 import { Camera, Star, Clock, MapPin, Download } from 'lucide-react';
-import Image from 'next/image';
+import { CldImage } from 'next-cloudinary';
 
 interface AttractionImage {
   url: string;
@@ -127,7 +127,7 @@ export function AttractionsSection({
                     <div className="relative aspect-4/3 bg-linear-to-br from-blue-400 to-green-500 overflow-hidden">
                       {attraction.images && attraction.images.length > 0 ? (
                         <>
-                          <Image
+                          <CldImage
                             src={
                               attraction.images.find((img) => img.isPrimary)
                                 ?.url || attraction.images[0]?.url
@@ -136,13 +136,8 @@ export function AttractionsSection({
                               attraction.images.find((img) => img.isPrimary)
                                 ?.alt || attraction.title
                             }
-                            width={400}
-                            height={300}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src =
-                                '/placeholder-image.jpg';
-                            }}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
                         </>

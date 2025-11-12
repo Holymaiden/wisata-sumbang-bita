@@ -40,7 +40,7 @@ export function HeroSection({
       id="home"
       className={`relative min-h-screen flex items-center justify-center overflow-hidden ${className}`}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/80 to-green-900/90">
+      <div className="absolute inset-0 bg-linear-to-br from-blue-900/90 via-blue-800/80 to-green-900/90">
         <div
           className="absolute inset-0 opacity-20"
           style={{
@@ -48,7 +48,7 @@ export function HeroSection({
           }}
         />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-green-600/20" />
+        <div className="absolute inset-0 bg-linear-to-r from-blue-600/20 to-green-600/20" />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -80,7 +80,7 @@ export function HeroSection({
             className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
           >
             {heading}
-            <span className="block bg-gradient-to-r from-blue-200 to-green-200 bg-clip-text text-transparent">
+            <span className="block bg-linear-to-r from-blue-200 to-green-200 bg-clip-text text-transparent">
               Sumpang Bita
             </span>
           </motion.h1>
@@ -122,7 +122,7 @@ export function HeroSection({
           >
             <Button
               size="lg"
-              className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-linear-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
               onClick={() => scrollToSection('attractions')}
             >
               Jelajahi Sekarang

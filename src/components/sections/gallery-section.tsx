@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { X, ZoomIn, Download, Share } from 'lucide-react';
+import { CldImage } from 'next-cloudinary';
 
 interface GalleryImageCard {
   id: string | number;
@@ -107,7 +108,7 @@ export function GallerySection({
     <>
       <section
         id="gallery"
-        className={`py-20 bg-gradient-to-b from-gray-50 to-white ${className}`}
+        className={`py-20 bg-linear-to-b from-gray-50 to-white ${className}`}
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
@@ -149,7 +150,7 @@ export function GallerySection({
                   onClick={() => setSelectedCategory(category)}
                   className={`transition-all duration-300 ${
                     selectedCategory === category
-                      ? 'bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700'
+                      ? 'bg-linear-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700'
                       : 'hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700'
                   }`}
                 >
@@ -174,7 +175,16 @@ export function GallerySection({
                     className="group cursor-pointer"
                     onClick={() => openLightbox(image)}
                   >
-                    <div className="relative aspect-[4/3] bg-gradient-to-br from-blue-400 to-green-500 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div className="relative aspect-4/3 bg-linear-to-br from-blue-400 to-green-500 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
+                      {image.url && (
+                        <CldImage
+                          src={image.url}
+                          alt={image.alt || image.title || 'Gallery image'}
+                          fill
+                          className="object-cover"
+                        />
+                      )}
+
                       <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-all duration-300" />
 
                       <div className="absolute top-3 left-3 z-10">
@@ -192,7 +202,7 @@ export function GallerySection({
                         </div>
                       </div>
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                      <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                         <h3 className="text-white font-semibold text-sm mb-1">
                           {image.title}
                         </h3>
@@ -227,7 +237,7 @@ export function GallerySection({
               <Button
                 variant="default"
                 size="lg"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                className="bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                 onClick={handleViewFullGallery}
               >
                 Lihat Galeri Lengkap di Instagram
@@ -261,7 +271,20 @@ export function GallerySection({
                 <X className="w-8 h-8" />
               </button>
 
-              <div className="relative aspect-[4/3] bg-gradient-to-br from-blue-400 to-green-500 rounded-lg overflow-hidden">
+              <div className="relative aspect-4/3 bg-linear-to-br from-blue-400 to-green-500 rounded-lg overflow-hidden">
+                {selectedImage?.url && (
+                  <CldImage
+                    src={selectedImage.url}
+                    alt={
+                      selectedImage.alt ||
+                      selectedImage.title ||
+                      'Gallery image'
+                    }
+                    fill
+                    className="object-cover"
+                  />
+                )}
+
                 <div className="absolute inset-0 flex items-center justify-center text-white">
                   <div className="text-center">
                     <ZoomIn className="w-16 h-16 mx-auto mb-4 opacity-80" />

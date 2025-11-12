@@ -1,19 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TextField, TextAreaField, SwitchField } from '../shared/FormFields';
+import { CloudinaryUploadWidget } from '@/components/ui/cloudinary-upload-widget';
 import { useFormState } from '@/hooks/admin/useFormState';
-import { Plus, Edit, Trash2, Image, Star } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Plus, Edit, Trash2, Star, X } from 'lucide-react';
+import { CldImage } from 'next-cloudinary';
 import type { AttractionImage } from '@/types/admin/entities';
 
 interface AttractionImageManagerProps {
@@ -64,9 +60,7 @@ export function AttractionImageManager({
       const order = data.order as number;
 
       if (!url?.trim()) {
-        errors.url = 'Image URL is required';
-      } else if (!isValidUrl(url)) {
-        errors.url = 'Please enter a valid URL';
+        errors.url = 'Image is required';
       }
 
       if (order < 0) {
@@ -76,15 +70,6 @@ export function AttractionImageManager({
       return Object.keys(errors).length > 0 ? errors : null;
     },
   });
-
-  const isValidUrl = (string: string) => {
-    try {
-      new URL(string);
-      return true;
-    } catch {
-      return false;
-    }
-  };
 
   const handleAdd = () => {
     setEditingImage(null);
@@ -123,11 +108,21 @@ export function AttractionImageManager({
       {images.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-8">
-            {/* eslint-disable-next-line jsx-a11y/alt-text */}
-            <Image
-              className="w-12 h-12 text-gray-400 mb-4"
-              aria-hidden="true"
-            />
+            <div className="w-12 h-12 text-gray-400 mb-4 flex items-center justify-center">
+              <svg
+                className="w-12 h-12"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
             <p className="text-gray-500 text-center">
               No images added yet. Click &quot;Add Image&quot; to get started.
             </p>
@@ -140,15 +135,11 @@ export function AttractionImageManager({
             .map((image) => (
               <Card key={image.id} className="overflow-hidden">
                 <div className="relative aspect-video bg-gray-100">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <CldImage
                     src={image.url}
                     alt={image.alt || 'Attraction image'}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iI2Y3ZjdmNyIvPjx0ZXh0IHg9IjEwMCIgeT0iNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBmb3VuZDwvdGV4dD48L3N2Zz4=';
-                    }}
+                    fill
+                    className="object-cover"
                   />
                   {image.isPrimary && (
                     <Badge className="absolute top-2 left-2 bg-yellow-500">
@@ -211,105 +202,123 @@ export function AttractionImageManager({
         </div>
       )}
 
-      {/* Image Form Dialog */}
-      <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>
-              {editingImage ? 'Edit Image' : 'Add New Image'}
-            </DialogTitle>
-            <DialogDescription>
-              {editingImage
-                ? 'Update image information'
-                : 'Add a new image to the attraction'}
-            </DialogDescription>
-          </DialogHeader>
+      {/* Image Form Modal */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-background/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowForm(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: 'spring', duration: 0.3 }}
+              className="gap-4 border bg-background rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 left-0 right-0 h-fit w-full bg-background z-50 border-b">
+                <div className="flex items-start justify-between py-4 px-6">
+                  <div className="flex flex-col gap-y-2 flex-1 pr-4">
+                    <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-gray-100">
+                      {editingImage ? 'Edit Image' : 'Add New Image'}
+                    </h1>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium text-sm md:text-base">
+                      {editingImage
+                        ? 'Update image information'
+                        : 'Add a new image to the attraction'}
+                    </p>
+                  </div>
 
-          <form onSubmit={form.handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <TextField
-                  {...form.getFieldProps('url')}
-                  label="Image URL"
-                  required
-                  placeholder="https://example.com/image.jpg"
-                  type="url"
-                />
-
-                <TextField
-                  {...form.getFieldProps('alt')}
-                  label="Alt Text"
-                  placeholder="Descriptive text for accessibility"
-                />
-
-                <TextField
-                  {...form.getFieldProps('order')}
-                  type="number"
-                  label="Display Order"
-                  placeholder="0"
-                  onChange={(e) =>
-                    form.setValue('order', Number(e.target.value) || 0)
-                  }
-                  value={String(form.data.order)}
-                />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowForm(false)}
+                    className="p-2 shrink-0"
+                  >
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
               </div>
 
-              <div className="space-y-4">
-                <TextAreaField
-                  {...form.getFieldProps('caption')}
-                  label="Caption"
-                  placeholder="Optional image caption"
-                  rows={3}
-                />
-
-                <SwitchField
-                  {...form.getSwitchProps('isPrimary')}
-                  label="Primary Image"
-                  description="Use as main attraction image"
-                />
-              </div>
-            </div>
-
-            {form.data.url &&
-            typeof form.data.url === 'string' &&
-            isValidUrl(form.data.url as string) ? (
-              <div>
-                <label className="text-sm font-medium">Preview</label>
-                <div className="mt-2 border rounded-lg p-4 bg-muted/30">
-                  <div className="relative aspect-video w-full max-w-md rounded-lg overflow-hidden bg-white">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={form.data.url as string}
-                      alt={(form.data.alt as string) || 'Image preview'}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
+              <form
+                onSubmit={form.handleSubmit}
+                className="flex flex-col space-y-4 p-6"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
+                    <CloudinaryUploadWidget
+                      value={form.data.url as string}
+                      onChange={(url, publicId) => {
+                        form.setValue('url', url);
+                        console.log('Uploaded image:', { url, publicId });
                       }}
+                      onRemove={() => form.setValue('url', '')}
+                      label="Image"
+                      error={form.errors.url}
+                      disabled={form.isSubmitting}
+                      description="Upload an image (max 5MB)"
+                      folder="attractions"
+                    />
+
+                    <TextField
+                      {...form.getFieldProps('alt')}
+                      label="Alt Text"
+                      placeholder="Descriptive text for accessibility"
+                    />
+
+                    <TextField
+                      {...form.getFieldProps('order')}
+                      type="number"
+                      label="Display Order"
+                      placeholder="0"
+                      onChange={(e) =>
+                        form.setValue('order', Number(e.target.value) || 0)
+                      }
+                      value={String(form.data.order)}
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <TextAreaField
+                      {...form.getFieldProps('caption')}
+                      label="Caption"
+                      placeholder="Optional image caption"
+                      rows={3}
+                    />
+
+                    <SwitchField
+                      {...form.getSwitchProps('isPrimary')}
+                      label="Primary Image"
+                      description="Use as main attraction image"
                     />
                   </div>
                 </div>
-              </div>
-            ) : null}
 
-            <div className="flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowForm(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={form.isSubmitting}>
-                {form.isSubmitting
-                  ? 'Saving...'
-                  : editingImage
-                  ? 'Update Image'
-                  : 'Add Image'}
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+                <div className="sticky bottom-0 left-0 right-0 bg-background border-t -mx-6 -mb-6 p-6 flex justify-end gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowForm(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={form.isSubmitting}>
+                    {form.isSubmitting
+                      ? 'Saving...'
+                      : editingImage
+                      ? 'Update Image'
+                      : 'Add Image'}
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

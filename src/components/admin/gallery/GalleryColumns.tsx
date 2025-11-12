@@ -13,7 +13,7 @@ import { GalleryImage } from '@/types/admin/entities';
 import { StatusBadge } from '../shared/StatusBadge';
 import { ActionButtons } from '../shared/ActionButtons';
 import { TableAction } from '@/types/admin';
-import Image from 'next/image';
+import { CldImage } from 'next-cloudinary';
 
 interface UseGalleryColumnsProps {
   onEdit: (image: GalleryImage) => void;
@@ -55,7 +55,7 @@ export function useGalleryColumns({
         <div className="flex items-center gap-3">
           <div className="relative h-16 w-16 rounded-lg overflow-hidden bg-muted">
             {row.original.url ? (
-              <Image
+              <CldImage
                 src={row.original.url}
                 alt={row.original.alt || row.original.title}
                 fill

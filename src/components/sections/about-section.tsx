@@ -58,7 +58,7 @@ export function AboutSection({
   return (
     <section
       id="about"
-      className={`py-20 bg-gradient-to-b from-gray-50 to-white ${className}`}
+      className={`py-20 bg-linear-to-b from-gray-50 to-white ${className}`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
@@ -107,7 +107,7 @@ export function AboutSection({
               viewport={{ once: true }}
               className="relative"
             >
-              <div className="aspect-[4/3] bg-gradient-to-br from-blue-400 to-green-500 rounded-2xl shadow-2xl flex items-center justify-center">
+              <div className="aspect-4/3 bg-linear-to-br from-blue-400 to-green-500 rounded-2xl shadow-2xl flex items-center justify-center">
                 <div className="text-center text-white">
                   <Camera className="w-16 h-16 mx-auto mb-4 opacity-80" />
                   <p className="text-lg font-medium">

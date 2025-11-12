@@ -18,7 +18,7 @@ import {
   Info,
   ExternalLink,
 } from 'lucide-react';
-import Image from 'next/image';
+import { CldImage } from 'next-cloudinary';
 
 interface AttractionImage {
   url: string;
@@ -210,15 +210,17 @@ export function AttractionDetailModal({
             <div className="p-6 space-y-8">
               <div className="space-y-4">
                 <div className="aspect-video bg-linear-to-br from-blue-400 to-green-500 rounded-xl overflow-hidden relative">
-                  <Image
-                    src={images[currentImageIndex]}
-                    alt={
-                      attraction.images?.[currentImageIndex]?.alt ||
-                      `${attraction.title} ${currentImageIndex + 1}`
-                    }
-                    fill
-                    className="object-cover"
-                  />
+                  {images[currentImageIndex] && (
+                    <CldImage
+                      src={images[currentImageIndex]}
+                      alt={
+                        attraction.images?.[currentImageIndex]?.alt ||
+                        `${attraction.title} ${currentImageIndex + 1}`
+                      }
+                      fill
+                      className="object-cover"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-black/20 flex items-end">
                     <div className="p-4 text-white">
                       <p className="text-lg font-medium">
@@ -240,21 +242,23 @@ export function AttractionDetailModal({
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
-                      className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
+                      className={`relative shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
                         currentImageIndex === index
                           ? 'border-blue-600'
                           : 'border-transparent'
                       }`}
                     >
-                      <Image
-                        src={imageUrl}
-                        alt={
-                          attraction.images?.[index]?.alt ||
-                          `${attraction.title} ${index + 1}`
-                        }
-                        fill
-                        className="object-cover"
-                      />
+                      {imageUrl && (
+                        <CldImage
+                          src={imageUrl}
+                          alt={
+                            attraction.images?.[index]?.alt ||
+                            `${attraction.title} ${index + 1}`
+                          }
+                          fill
+                          className="object-cover"
+                        />
+                      )}
                     </button>
                   ))}
                 </div>

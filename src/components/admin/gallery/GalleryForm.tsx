@@ -7,10 +7,10 @@ import {
   SelectField,
   SwitchField,
 } from '../shared/FormFields';
+import { CloudinaryUploadWidget } from '@/components/ui/cloudinary-upload-widget';
 import { useFormState } from '@/hooks/admin/useFormState';
 import { GalleryFormData, GALLERY_CATEGORIES } from '@/types/admin/entities';
 import { BaseFormProps } from '@/types/admin';
-import Image from 'next/image';
 
 interface GalleryFormProps
   extends Omit<BaseFormProps<GalleryFormData>, 'onSubmit'> {
@@ -64,9 +64,7 @@ export function GalleryForm({
       }
 
       if (!url?.trim()) {
-        errors.url = 'Image URL is required';
-      } else if (!isValidUrl(url)) {
-        errors.url = 'Please enter a valid URL';
+        errors.url = 'Image is required';
       }
 
       if (!data.category) {
@@ -80,15 +78,6 @@ export function GalleryForm({
       return Object.keys(errors).length > 0 ? errors : null;
     },
   });
-
-  const isValidUrl = (string: string) => {
-    try {
-      new URL(string);
-      return true;
-    } catch {
-      return false;
-    }
-  };
 
   return (
     <FormDialog
@@ -113,12 +102,17 @@ export function GalleryForm({
             placeholder="Enter image title"
           />
 
-          <TextField
-            {...form.getFieldProps('url')}
-            label="Image URL"
-            required
-            placeholder="https://example.com/image.jpg"
-            type="url"
+          <CloudinaryUploadWidget
+            value={form.data.url as string}
+            onChange={(url) => {
+              form.setValue('url', url);
+            }}
+            onRemove={() => form.setValue('url', '')}
+            label="Image"
+            error={form.errors.url}
+            disabled={isLoading || form.isSubmitting}
+            description="Upload an image (max 5MB)"
+            folder="gallery"
           />
 
           <TextField
@@ -181,31 +175,6 @@ export function GalleryForm({
           rows={3}
         />
       </div>
-
-      {form.data.url &&
-        typeof form.data.url === 'string' &&
-        isValidUrl(form.data.url) && (
-          <div className="col-span-full">
-            <label className="text-sm font-medium">Preview</label>
-            <div className="mt-2 border rounded-lg p-4 bg-muted/30">
-              <div className="relative h-48 w-full rounded-lg overflow-hidden bg-white">
-                <Image
-                  src={form.data.url as string}
-                  alt={
-                    (form.data.alt as string) ||
-                    (form.data.title as string) ||
-                    'Preview'
-                  }
-                  fill
-                  className="object-contain"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        )}
     </FormDialog>
   );
 }

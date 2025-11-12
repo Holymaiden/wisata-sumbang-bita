@@ -122,7 +122,6 @@
   }
 }
 
-/* Custom CSS for Sumpang Bita Tourism */
 @layer utilities {
   .font-display {
     font-family: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
@@ -183,4 +182,23 @@ html {
   animation: skeleton-loading 1.2s ease-in-out infinite;
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200px 100%;
+}
+
+#cloudinary-overlay,
+.cloudinary-overlay,
+.cloudinary-widget-overlay,
+.cloudinary-widget,
+div[id^='cloudinary'] {
+  z-index: 99999 !important;
+  position: relative !important;
+}
+
+.cloudinary-widget iframe,
+iframe[id^='cloudinary'] {
+  z-index: 99999 !important;
+}
+
+body > div[class*='cloudinary'],
+body > iframe[id*='cloudinary'] {
+  z-index: 99999 !important;
 }
