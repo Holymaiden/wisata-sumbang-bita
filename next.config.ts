@@ -5,14 +5,12 @@ const nextConfig: NextConfig = {
     domains: ['localhost'],
     unoptimized: true,
   },
-  experimental: {
-    turbo: {
-      root: '.',
-    },
-  },
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  turbopack: {
+    root: '.'
+  },
 };
 
 export default nextConfig;
