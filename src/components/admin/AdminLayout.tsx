@@ -58,7 +58,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin', icon: BarChart3, label: 'Dashboard', exact: true },
     { href: '/admin/attractions', icon: MapPin, label: 'Attractions' },
     { href: '/admin/gallery', icon: Image, label: 'Gallery' },
-    { href: '/admin/reviews', icon: Star, label: 'Reviews' },
+    // { href: '/admin/reviews', icon: Star, label: 'Reviews' },
     { href: '/admin/bookings', icon: Calendar, label: 'Bookings' },
     { href: '/admin/contacts', icon: MessageSquare, label: 'Contacts' },
     { href: '/admin/settings', icon: Settings, label: 'Settings' },
