@@ -9,7 +9,6 @@ import {
   MapPin,
   Image,
   MessageSquare,
-  Star,
   Calendar,
   Settings,
   LogOut,
